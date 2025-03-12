@@ -12,6 +12,7 @@ export default function ProtectedRoute({ children }) {
     console.log("Protected route hitting");
 
     if (!isLoading && !sessionValid) {
+      console.log("Protected route redirecting to login");
       return navigation.reset({
         index: 0,
         routes: [{ name: "Login" }],

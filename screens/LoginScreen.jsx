@@ -13,6 +13,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import axios from "axios";
 import { API_URL } from "../constant";
 import { storeToken } from "../utils/tokenHandler";
+import { useAuth } from "../context/authContext";
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
@@ -20,6 +21,7 @@ const LoginScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const { refreshSession } = useAuth();
 
   const handleLogin = async () => {
     // Form validation
@@ -48,18 +50,11 @@ const LoginScreen = ({ navigation }) => {
 
       if (response.data.status === "success") {
         setError(false);
-        console.log("Login successful", response.data);
 
         // Store token in AsyncStorage
         await storeToken(response.data.token);
 
-        // Navigate to Dashboard
-        setTimeout(() => {
-          navigation.reset({
-            index: 0,
-            routes: [{ name: "Dashboard" }],
-          });
-        }, 100);
+        await refreshSession();
       } else {
         setError(true);
         setErrorMessage(response.data.message || "Login failed");
