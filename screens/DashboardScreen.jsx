@@ -12,6 +12,8 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import { removeToken } from "../utils/tokenHandler";
+import { useAuth } from "../context/authContext";
 
 const API_URL = "http://localhost:4002";
 
@@ -42,6 +44,8 @@ const CoachCard = ({ coach, onSelect, isSelected }) => {
 };
 
 const DashboardScreen = ({ navigation }) => {
+  const { refreshSession } = useAuth();
+
   const [coaches, setCoaches] = useState([]);
   const [selectedCoach, setSelectedCoach] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -82,11 +86,9 @@ const DashboardScreen = ({ navigation }) => {
 
   const handleLogout = async () => {
     try {
-      await AsyncStorage.removeItem("userToken");
-      navigation.reset({
-        index: 0,
-        routes: [{ name: "Login" }],
-      });
+      console.log("Logging out...");
+      await removeToken();
+      await refreshSession();
     } catch (error) {
       console.error("Logout error:", error);
       Alert.alert("Error", "An error occurred during logout");

@@ -105,13 +105,7 @@ const RegisterScreen = ({ navigation }) => {
         // Store token if provided
         await storeToken(response.data.token);
 
-        // Navigate to Dashboard
-        setTimeout(() => {
-          navigation.reset({
-            index: 0,
-            routes: [{ name: "Dashboard" }],
-          });
-        }, 100);
+        await refreshSession();
       } else {
         setError(true);
         setErrorMessage(response.data.message || "Registration failed");

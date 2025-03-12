@@ -49,6 +49,9 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const refreshSession = async () => {
+    await checkSession();
+  };
   // Check session on initial mount
   useEffect(() => {
     checkSession();
@@ -58,9 +61,8 @@ export const AuthProvider = ({ children }) => {
     sessionValid,
     isLoading,
     isEndUser,
-    logout,
-    refreshSession,
     lastChecked,
+    refreshSession,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
