@@ -1,20 +1,30 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import LoadingScreen from "./screens/LoadingScreen";
+import AuthStack from "./navigation/AuthStack";
+import MainStack from "./navigation/MainStack";
+import { AuthProvider, useAuth } from "./context/authContext";
 
+// Navigation container that uses the auth context
+const Navigation = () => {
+  const { sessionValid, isLoading } = useAuth();
+
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
+
+  return (
+    <NavigationContainer>
+      {sessionValid ? <MainStack /> : <AuthStack />}
+    </NavigationContainer>
+  );
+};
+
+// Main App component
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <AuthProvider>
+      <Navigation />
+    </AuthProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
