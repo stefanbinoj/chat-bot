@@ -49,54 +49,10 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Logout function
-  const logout = async () => {
-    try {
-      await apiWithHeaders.post("/api/session/logout");
-      //naviagate to login page todo
-    } catch (error) {
-      console.error("Logout API call failed:", error);
-    } finally {
-      // Always remove token and update state regardless of API success
-      await removeToken();
-      setSessionValid(false);
-    }
-  };
-
-  // Function to manually refresh the session
-  const refreshSession = async () => {
-    await checkSession();
-  };
-
   // Check session on initial mount
   useEffect(() => {
     checkSession();
   }, []);
-
-  // Re-check session when returning to the app from background
-  useEffect(() => {
-    const handleAppStateChange = (nextAppState) => {
-      if (nextAppState === "active" && lastChecked) {
-        // If it's been more than 5 minutes since the last check
-        const fiveMinutesAgo = new Date();
-        fiveMinutesAgo.setMinutes(fiveMinutesAgo.getMinutes() - 5);
-
-        if (lastChecked < fiveMinutesAgo) {
-          checkSession();
-        }
-      }
-    };
-
-    // Add app state change listener
-    const subscription = AppState.addEventListener(
-      "change",
-      handleAppStateChange
-    );
-
-    return () => {
-      subscription.remove();
-    };
-  }, [lastChecked]);
 
   const value = {
     sessionValid,

@@ -51,13 +51,15 @@ const LoginScreen = ({ navigation }) => {
         console.log("Login successful", response.data);
 
         // Store token in AsyncStorage
-        storeToken(response.data.token);
+        await storeToken(response.data.token);
 
         // Navigate to Dashboard
-        navigation.reset({
-          index: 0,
-          routes: [{ name: "Dashboard" }],
-        });
+        setTimeout(() => {
+          navigation.reset({
+            index: 0,
+            routes: [{ name: "Dashboard" }],
+          });
+        }, 100);
       } else {
         setError(true);
         setErrorMessage(response.data.message || "Login failed");

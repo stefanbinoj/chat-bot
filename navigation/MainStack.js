@@ -2,8 +2,7 @@ import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import DashboardScreen from "../screens/DashboardScreen";
 import ChatScreen from "../screens/ChatScreen";
-import ProfileScreen from "../screens/ProfileScreen";
-import ProtectedRoute from "../components/ProtectedRoute";
+import ProtectedRoute from "../utils/protectedRoute";
 
 const Stack = createStackNavigator();
 
@@ -30,10 +29,6 @@ const MainStack = () => {
         })}
       >
         {(props) => <ProtectedScreen component={ChatScreen} {...props} />}
-      </Stack.Screen>
-
-      <Stack.Screen name="Profile" options={{ title: "Your Profile" }}>
-        {(props) => <ProtectedScreen component={ProfileScreen} {...props} />}
       </Stack.Screen>
     </Stack.Navigator>
   );

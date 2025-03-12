@@ -14,6 +14,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { storeToken } from "../utils/tokenHandler";
 import axios from "axios";
 import { API_URL } from "../constant";
+import { useAuth } from "../context/authContext";
 
 const RegisterScreen = ({ navigation }) => {
   const [name, setName] = useState("");
@@ -24,6 +25,7 @@ const RegisterScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const { refreshSession } = useAuth();
 
   // Check company name when company code is 5 characters
   useEffect(() => {
@@ -101,13 +103,15 @@ const RegisterScreen = ({ navigation }) => {
 
       if (response.data.status === "success") {
         // Store token if provided
-        storeToken(response.data.token);
+        await storeToken(response.data.token);
 
         // Navigate to Dashboard
-        navigation.reset({
-          index: 0,
-          routes: [{ name: "Dashboard" }],
-        });
+        setTimeout(() => {
+          navigation.reset({
+            index: 0,
+            routes: [{ name: "Dashboard" }],
+          });
+        }, 100);
       } else {
         setError(true);
         setErrorMessage(response.data.message || "Registration failed");
