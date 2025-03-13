@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Entypo from "@expo/vector-icons/Entypo";
 import {
   StyleSheet,
   View,
@@ -20,9 +21,7 @@ import { apiWithHeaders, removeToken } from "../utils/tokenHandler";
 import { useAuth } from "../context/authContext";
 
 // Coach Card Component with enhanced UI
-const CoachCard = ({ coach, onSelect, isSelected }) => {
-  if (!coach) return null; // Prevent rendering if coach is undefined
-
+const CoachCard = ({ coach, onSelect, isSelected, handleChatButtonPress }) => {
   const firstLetter = coach.title ? coach.title.charAt(0).toUpperCase() : "C";
 
   return (
@@ -45,16 +44,13 @@ const CoachCard = ({ coach, onSelect, isSelected }) => {
         )}
         <View style={styles.coachInfo}>
           <Text style={styles.coachName}>{coach.title}</Text>
-          <Text style={styles.coachSpecialty} numberOfLines={1}>
-            {coach.specialty}
-          </Text>
           <Text style={styles.coachBio} numberOfLines={2}>
             {coach.description}
           </Text>
         </View>
         <TouchableOpacity
           style={styles.chatButton}
-          onPress={() => onSelect(coach)}
+          onPress={() => handleChatButtonPress(coach)}
         >
           <Text style={styles.chatButtonText}>Chat Now</Text>
         </TouchableOpacity>
@@ -90,7 +86,6 @@ const DashboardScreen = ({ navigation }) => {
   // User verification states
   const [loading, setLoading] = useState(true);
   const [isActive, setIsActive] = useState(false);
-  const [endUser, setEndUser] = useState(null);
   const [hasActiveSubscription, setHasActiveSubscription] = useState(false);
   const [showFirstLoginModal, setShowFirstLoginModal] = useState(false);
   const [name, setName] = useState("");
@@ -109,7 +104,6 @@ const DashboardScreen = ({ navigation }) => {
 
       if (userResponse.data.status === "success") {
         setIsActive(userResponse.data.isActive);
-        setEndUser(userResponse.data.endUser);
 
         if (userResponse.data.endUser.isFirstLogin) {
           setShowFirstLoginModal(true);
@@ -191,7 +185,6 @@ const DashboardScreen = ({ navigation }) => {
 
       if (response.data.status === "success") {
         setShowFirstLoginModal(false);
-        setEndUser(response.data.endUser);
         // Refresh coaches after profile update
         fetchCoaches();
       } else {
@@ -213,8 +206,14 @@ const DashboardScreen = ({ navigation }) => {
 
   const handleCoachSelect = (coach) => {
     setSelectedCoach(coach);
-    // Navigate to Chat screen with coach data
-    navigation.navigate("Chat", { coach: coach });
+  };
+
+  const handleChatButtonPress = (coach) => {
+    navigation.navigate("Chat", { coach });
+  };
+
+  const handleRedirectToChat = () => {
+    navigation.navigate("Chat", { coach: selectedCoach });
   };
 
   const handleLogout = async () => {
@@ -339,9 +338,18 @@ const DashboardScreen = ({ navigation }) => {
 
       <View style={styles.header}>
         <Text style={styles.title}>Select a Coach</Text>
-        <TouchableOpacity onPress={handleLogout}>
-          <Text style={styles.logoutText}>Logout</Text>
-        </TouchableOpacity>
+        {!selectedCoach ? (
+          <TouchableOpacity onPress={handleLogout}>
+            <Text style={styles.logoutText}>Logout</Text>
+          </TouchableOpacity>
+        ) : (
+          <Entypo
+            name="forward"
+            size={24}
+            color="black"
+            onPress={handleRedirectToChat}
+          />
+        )}
       </View>
 
       <View style={styles.subHeader}>
@@ -375,10 +383,8 @@ const DashboardScreen = ({ navigation }) => {
             <CoachCard
               coach={item}
               onSelect={handleCoachSelect}
-              isSelected={
-                selectedCoach &&
-                (selectedCoach.id === item.id || selectedCoach._id === item._id)
-              }
+              handleChatButtonPress={handleChatButtonPress}
+              isSelected={selectedCoach && selectedCoach._id === item._id}
             />
           )}
           contentContainerStyle={styles.coachList}
@@ -489,12 +495,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
     textAlign: "center",
   },
-  coachSpecialty: {
-    fontSize: 14,
-    color: "#4285F4",
-    marginBottom: 6,
-    textAlign: "center",
-  },
+
   coachBio: {
     fontSize: 14,
     color: "#666",

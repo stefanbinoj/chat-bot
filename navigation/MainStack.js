@@ -19,7 +19,7 @@ const MainStack = () => {
         {(props) => <ProtectedScreen component={DashboardScreen} {...props} />}
       </Stack.Screen>
 
-      <Stack.Screen name="Chat" ptions={{ headerShown: false }}>
+      <Stack.Screen name="Chat" options={{ headerShown: false }}>
         {(props) => <ProtectedScreen component={ChatScreen} {...props} />}
       </Stack.Screen>
     </Stack.Navigator>
