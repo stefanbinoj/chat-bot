@@ -151,9 +151,9 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
-    fontWeight: "700",
+    fontWeight: "900",
     marginBottom: 32,
-    color: "#1e3a8a",
+    color: "#1cb08e",
     alignSelf: "flex-start",
   },
   input: {
@@ -205,6 +205,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
+    borderRadius: 40,
   },
 });
 

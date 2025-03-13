@@ -15,6 +15,7 @@ import { storeToken } from "../utils/tokenHandler";
 import axios from "axios";
 import { API_URL } from "../constant";
 import { useAuth } from "../context/authContext";
+import { LinearGradient } from "expo-linear-gradient"; // ✅ Use Expo's LinearGradient
 
 const RegisterScreen = ({ navigation }) => {
   const [name, setName] = useState("");
@@ -136,7 +137,7 @@ const RegisterScreen = ({ navigation }) => {
 
             <TextInput
               style={styles.input}
-              placeholder="Your Name"
+              placeholder="Name"
               value={name}
               onChangeText={setName}
               autoCapitalize="words"
@@ -153,7 +154,7 @@ const RegisterScreen = ({ navigation }) => {
 
             <TextInput
               style={styles.input}
-              placeholder="Password (min. 8 characters)"
+              placeholder="Password"
               value={password}
               onChangeText={setPassword}
               secureTextEntry
@@ -194,11 +195,18 @@ const RegisterScreen = ({ navigation }) => {
               onPress={handleRegister}
               disabled={isLoading}
             >
-              {isLoading ? (
-                <ActivityIndicator color="#fff" />
-              ) : (
-                <Text style={styles.registerButtonText}>Get Started</Text>
-              )}
+              <LinearGradient
+                colors={["#20c883", "#1cb08e"]} // Gradient colors
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.chatButton}
+              >
+                {isLoading ? (
+                  <ActivityIndicator color="#fff" />
+                ) : (
+                  <Text style={styles.registerButtonText}>Get Started</Text>
+                )}
+              </LinearGradient>
             </Pressable>
 
             <View style={styles.loginContainer}>
@@ -238,9 +246,9 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
-    fontWeight: "700",
+    fontWeight: "900",
     marginBottom: 32,
-    color: "#1e3a8a",
+    color: "#1cb08e",
     alignSelf: "flex-start",
   },
   input: {
@@ -248,7 +256,7 @@ const styles = StyleSheet.create({
     height: 56,
     borderWidth: 1,
     borderColor: "#d1d5db",
-    borderRadius: 12,
+    borderRadius: 30,
     paddingHorizontal: 16,
     marginBottom: 18,
     backgroundColor: "white",
@@ -258,6 +266,9 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     marginBottom: 20,
     width: "100%",
+    borderTopColor: "#d1d5db",
+    borderTopWidth: 1,
+    paddingTop: 20,
   },
   companyCodeContainer: {
     marginBottom: 18,
@@ -268,14 +279,14 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     fontWeight: "500",
-    color: "#4b5563",
+    color: "rgb(163 174 208 )",
     marginBottom: 6,
   },
   companyInput: {
     height: 56,
     borderWidth: 1,
     borderColor: "#d1d5db",
-    borderRadius: 12,
+    borderRadius: 30,
     paddingHorizontal: 16,
     backgroundColor: "white",
     fontSize: 16,
@@ -288,7 +299,6 @@ const styles = StyleSheet.create({
   registerButton: {
     width: "100%",
     height: 56,
-    backgroundColor: "#4285F4",
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 12,
@@ -309,8 +319,17 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   loginLink: {
-    color: "#4285F4",
+    color: "#1cb08e",
     fontWeight: "600",
+  },
+  chatButton: {
+    paddingVertical: 12,
+    width: "100%",
+    marginHorizontal: 60,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 40,
   },
 });
 
