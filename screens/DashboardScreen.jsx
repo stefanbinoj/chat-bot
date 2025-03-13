@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Entypo from "@expo/vector-icons/Entypo";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { LinearGradient } from "expo-linear-gradient"; // ✅ Use Expo's LinearGradient
+
 import {
   StyleSheet,
   View,
@@ -44,7 +47,7 @@ const CoachCard = ({ coach, onSelect, isSelected, handleChatButtonPress }) => {
         )}
         <View style={styles.coachInfo}>
           <Text style={styles.coachName}>{coach.title}</Text>
-          <Text style={styles.coachBio} numberOfLines={2}>
+          <Text style={styles.coachBio} numberOfLines={1}>
             {coach.description}
           </Text>
         </View>
@@ -52,7 +55,14 @@ const CoachCard = ({ coach, onSelect, isSelected, handleChatButtonPress }) => {
           style={styles.chatButton}
           onPress={() => handleChatButtonPress(coach)}
         >
-          <Text style={styles.chatButtonText}>Chat Now</Text>
+          <LinearGradient
+            colors={["#20c883", "#1cb08e"]} // Gradient colors
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.chatButton}
+          >
+            <Text style={styles.chatButtonText}>Chat Now</Text>
+          </LinearGradient>
         </TouchableOpacity>
       </View>
     </TouchableOpacity>
@@ -231,11 +241,7 @@ const DashboardScreen = ({ navigation }) => {
 
   // First Login Modal
   const FirstLoginModal = () => (
-    <Modal
-      visible={showFirstLoginModal}
-      animationType="slide"
-      transparent={true}
-    >
+    <Modal visible={showFirstLoginModal} transparent={true}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.modalContainer}
@@ -251,7 +257,6 @@ const DashboardScreen = ({ navigation }) => {
               style={styles.input}
               value={name}
               onChangeText={setName}
-              placeholder="Enter your full name"
             />
 
             <Text style={styles.inputLabel}>New Password</Text>
@@ -260,7 +265,6 @@ const DashboardScreen = ({ navigation }) => {
               value={password}
               onChangeText={setPassword}
               secureTextEntry
-              placeholder="Minimum 8 characters"
             />
 
             <TouchableOpacity
@@ -268,11 +272,18 @@ const DashboardScreen = ({ navigation }) => {
               onPress={handleFirstLoginSubmit}
               disabled={updating}
             >
-              {updating ? (
-                <ActivityIndicator color="#fff" />
-              ) : (
-                <Text style={styles.buttonText}>Update Profile</Text>
-              )}
+              <LinearGradient
+                colors={["#20c883", "#1cb08e"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.gradientButton}
+              >
+                {updating ? (
+                  <ActivityIndicator color="#fff" />
+                ) : (
+                  <Text style={styles.buttonText}>Update Profile</Text>
+                )}
+              </LinearGradient>
             </TouchableOpacity>
           </View>
         </View>
@@ -334,19 +345,23 @@ const DashboardScreen = ({ navigation }) => {
   // Main Dashboard Screen with Coach Selection
   return (
     <SafeAreaView style={styles.container}>
-      <FirstLoginModal />
-
+      {showFirstLoginModal && <FirstLoginModal />}
       <View style={styles.header}>
         <Text style={styles.title}>Select a Coach</Text>
         {!selectedCoach ? (
           <TouchableOpacity onPress={handleLogout}>
-            <Text style={styles.logoutText}>Logout</Text>
+            <MaterialCommunityIcons
+              name="logout"
+              size={24}
+              color="red"
+              style={styles.logoutIcon}
+            />
           </TouchableOpacity>
         ) : (
           <Entypo
             name="forward"
             size={24}
-            color="black"
+            color="#20c883"
             onPress={handleRedirectToChat}
           />
         )}
@@ -399,19 +414,20 @@ const DashboardScreen = ({ navigation }) => {
   );
 };
 
-const { width } = Dimensions.get("window");
+const { width, height } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f8f9fa",
+    position: "relative",
   },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 20,
-    paddingTop: Platform.OS === "ios" ? 10 : 50,
+    paddingTop: Platform.OS === "ios" ? 10 : 40,
     paddingBottom: 10,
     backgroundColor: "#fff",
   },
@@ -429,12 +445,9 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 16,
-    color: "#666",
+    color: "rgb(163 174 208 )",
   },
-  logoutText: {
-    color: "#f44336",
-    fontWeight: "600",
-  },
+
   scrollContainer: {
     padding: 12,
   },
@@ -469,6 +482,11 @@ const styles = StyleSheet.create({
     height: 90,
     borderRadius: 45,
     marginBottom: 12,
+    shadowColor: "#000", // Shadow color
+    shadowOffset: { width: 0, height: 4 }, // X, Y offset
+    shadowOpacity: 0.3, // Opacity of shadow
+    shadowRadius: 5, // Blur radius
+    elevation: 8,
   },
   placeholderAvatar: {
     width: 90,
@@ -498,14 +516,15 @@ const styles = StyleSheet.create({
 
   coachBio: {
     fontSize: 14,
-    color: "#666",
+    color: "rgb(163 174 208 )",
     textAlign: "center",
     marginBottom: 8,
+    marginLeft: 40,
+    marginRight: 40,
   },
   chatButton: {
-    backgroundColor: "#4285F4",
-    paddingVertical: 8,
-    paddingHorizontal: 16,
+    paddingVertical: 10,
+    paddingHorizontal: 22,
     borderRadius: 20,
     marginTop: 4,
   },
@@ -672,7 +691,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#f9f9f9",
   },
   primaryButton: {
-    backgroundColor: "#4285F4",
     padding: 15,
     borderRadius: 8,
     alignItems: "center",
@@ -687,6 +705,48 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontSize: 16,
     color: "#666",
+  },
+  logoutIcon: {
+    marginRight: 10,
+  },
+  // Add these styles to your StyleSheet
+
+  fullScreenForm: {
+    flex: 1,
+    backgroundColor: "#fff",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+    position: "relative",
+    zIndex: 999,
+    top: height / 4,
+  },
+  formContent: {
+    width: "100%",
+    maxWidth: 400,
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    padding: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
+  },
+  formTitle: {
+    fontSize: 22,
+    fontWeight: "bold",
+    marginBottom: 20,
+    textAlign: "center",
+    color: "#333",
+  },
+  gradientButton: {
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
 
