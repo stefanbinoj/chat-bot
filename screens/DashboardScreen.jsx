@@ -23,6 +23,56 @@ import {
 import { apiWithHeaders, removeToken } from "../utils/tokenHandler";
 import { useAuth } from "../context/authContext";
 
+const FirstLoginModalContent = ({
+  name,
+  setName,
+  password,
+  setPassword,
+  updating,
+  handleFirstLoginSubmit,
+}) => (
+  <KeyboardAvoidingView
+    behavior={Platform.OS === "ios" ? "padding" : "height"}
+    style={styles.modalContainer}
+  >
+    <View style={styles.modalOverlay}>
+      <View style={styles.modalContent}>
+        <Text style={styles.modalTitle}>Welcome! Complete Your Profile</Text>
+
+        <Text style={styles.inputLabel}>Name</Text>
+        <TextInput style={styles.input} value={name} onChangeText={setName} />
+
+        <Text style={styles.inputLabel}>New Password</Text>
+        <TextInput
+          style={styles.input}
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+        />
+
+        <TouchableOpacity
+          style={styles.primaryButton}
+          onPress={handleFirstLoginSubmit}
+          disabled={updating}
+        >
+          <LinearGradient
+            colors={["#20c883", "#1cb08e"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.gradientButton}
+          >
+            {updating ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.buttonText}>Update Profile</Text>
+            )}
+          </LinearGradient>
+        </TouchableOpacity>
+      </View>
+    </View>
+  </KeyboardAvoidingView>
+);
+
 // Coach Card Component with enhanced UI
 const CoachCard = ({ coach, onSelect, isSelected, handleChatButtonPress }) => {
   const firstLetter = coach.title ? coach.title.charAt(0).toUpperCase() : "C";
@@ -239,55 +289,20 @@ const DashboardScreen = ({ navigation }) => {
     }
   };
 
-  // First Login Modal
-  const FirstLoginModal = () => (
-    <Modal visible={showFirstLoginModal} transparent={true}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.modalContainer}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>
-              Welcome! Complete Your Profile
-            </Text>
-
-            <Text style={styles.inputLabel}>Name</Text>
-            <TextInput
-              style={styles.input}
-              value={name}
-              onChangeText={setName}
-            />
-
-            <Text style={styles.inputLabel}>New Password</Text>
-            <TextInput
-              style={styles.input}
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry
-            />
-
-            <TouchableOpacity
-              style={styles.primaryButton}
-              onPress={handleFirstLoginSubmit}
-              disabled={updating}
-            >
-              <LinearGradient
-                colors={["#20c883", "#1cb08e"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={styles.gradientButton}
-              >
-                {updating ? (
-                  <ActivityIndicator color="#fff" />
-                ) : (
-                  <Text style={styles.buttonText}>Update Profile</Text>
-                )}
-              </LinearGradient>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </KeyboardAvoidingView>
+  const renderFirstLoginModal = () => (
+    <Modal
+      visible={showFirstLoginModal}
+      transparent={true}
+      animationType="fade" // Try "fade" instead of default "slide"
+    >
+      <FirstLoginModalContent
+        name={name}
+        setName={setName}
+        password={password}
+        setPassword={setPassword}
+        updating={updating}
+        handleFirstLoginSubmit={handleFirstLoginSubmit}
+      />
     </Modal>
   );
 
@@ -345,7 +360,7 @@ const DashboardScreen = ({ navigation }) => {
   // Main Dashboard Screen with Coach Selection
   return (
     <SafeAreaView style={styles.container}>
-      {showFirstLoginModal && <FirstLoginModal />}
+      {showFirstLoginModal && renderFirstLoginModal()}
       <View style={styles.header}>
         <Text style={styles.title}>Select a Coach</Text>
         {!selectedCoach ? (
@@ -471,7 +486,7 @@ const styles = StyleSheet.create({
   },
   selectedCoachCard: {
     borderWidth: 2,
-    borderColor: "#4285F4",
+    borderColor: "#1cb08e",
   },
   coachCardInner: {
     padding: 16,

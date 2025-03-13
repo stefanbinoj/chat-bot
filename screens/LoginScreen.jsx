@@ -14,6 +14,7 @@ import axios from "axios";
 import { API_URL } from "../constant";
 import { storeToken } from "../utils/tokenHandler";
 import { useAuth } from "../context/authContext";
+import { LinearGradient } from "expo-linear-gradient";
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
@@ -103,11 +104,18 @@ const LoginScreen = ({ navigation }) => {
             onPress={handleLogin}
             disabled={isLoading}
           >
-            {isLoading ? (
-              <ActivityIndicator color="#fff" />
-            ) : (
-              <Text style={styles.loginButtonText}>LOGIN</Text>
-            )}
+            <LinearGradient
+              colors={["#20c883", "#1cb08e"]} // Gradient colors
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.chatButton}
+            >
+              {isLoading ? (
+                <ActivityIndicator color="#fff" />
+              ) : (
+                <Text style={styles.loginButtonText}>LOGIN</Text>
+              )}
+            </LinearGradient>
           </Pressable>
 
           <View style={styles.registerContainer}>
@@ -153,7 +161,7 @@ const styles = StyleSheet.create({
     height: 56,
     borderWidth: 1,
     borderColor: "#d1d5db",
-    borderRadius: 12,
+    borderRadius: 30,
     paddingHorizontal: 16,
     marginBottom: 18,
     backgroundColor: "white",
@@ -168,7 +176,6 @@ const styles = StyleSheet.create({
   loginButton: {
     width: "100%",
     height: 56,
-    backgroundColor: "#4285F4",
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 12,
@@ -188,8 +195,16 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   registerLink: {
-    color: "#4285F4",
+    color: "#1cb08e",
     fontWeight: "600",
+  },
+  chatButton: {
+    paddingVertical: 12,
+    width: "100%",
+    marginHorizontal: 60,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
 
