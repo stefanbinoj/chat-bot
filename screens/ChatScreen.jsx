@@ -16,7 +16,7 @@ import {
   ScrollView,
 } from "react-native";
 import { apiWithHeaders } from "../utils/tokenHandler";
-import { Ionicons, Feather } from "@expo/vector-icons";
+import { Ionicons, Feather, FontAwesome5 } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
 import OnlineIndicator from "../components/onlineIndicator";
 
@@ -29,6 +29,7 @@ const ChatScreen = ({ route, navigation }) => {
   const [inputText, setInputText] = useState("");
   const [sending, setSending] = useState(false);
   const flatListRef = useRef(null);
+  const [isFocused, setIsFocused] = useState(false);
 
   // Conversation management
   const [conversations, setConversations] = useState([]);
@@ -109,6 +110,7 @@ const ChatScreen = ({ route, navigation }) => {
 
   const sendMessage = async () => {
     if (!inputText.trim() || !selectedConversation) return;
+    setSending(true);
 
     // Create a user message object
     const userMessage = {
@@ -133,6 +135,7 @@ const ChatScreen = ({ route, navigation }) => {
 
       // Add AI response to messages
       setIsTyping(false);
+      setSending(false);
       const assistantMessage = {
         role: "assistant",
         content: response.data.response,
@@ -193,11 +196,8 @@ const ChatScreen = ({ route, navigation }) => {
           >
             {item.content || item.text}
           </Text>
-          <Text style={styles.timestamp}>
-            {new Date(item.timestamp).toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit",
-            })}
+          <Text style={[styles.timestamp, isUser && { color: "white" }]}>
+            {formatDate(item.timestamp)}
           </Text>
         </View>
       </View>
@@ -227,12 +227,15 @@ const ChatScreen = ({ route, navigation }) => {
   const formatDate = (dateString) => {
     if (!dateString) return "";
     const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
+    const month = date.toLocaleDateString("en-US", { month: "short" });
+    const day = date.getDate();
+    const time = date.toLocaleTimeString("en-US", {
       hour: "2-digit",
       minute: "2-digit",
+      hour12: true,
     });
+
+    return `${month} ${day}, ${time}`;
   };
 
   // Get the date of the last message in a conversation
@@ -324,7 +327,11 @@ const ChatScreen = ({ route, navigation }) => {
             }
             ListEmptyComponent={() => (
               <View style={styles.emptyChat}>
-                <Ionicons name="chatbubbles-outline" size={50} color="#ccc" />
+                <Ionicons
+                  name="chatbubbles-outline"
+                  size={50}
+                  color="#20c883"
+                />
                 <Text style={styles.emptyChatText}>
                   No messages yet. Start the conversation!
                 </Text>
@@ -333,33 +340,28 @@ const ChatScreen = ({ route, navigation }) => {
           />
         )}
 
-        {/* Quick Prompt Buttons */}
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.quickPromptContainer}
-        ></ScrollView>
-
         {/* Message Input */}
         <View style={styles.inputContainer}>
           <TextInput
-            style={styles.input}
-            placeholder="Type a message..."
+            style={[styles.input, isFocused && { borderColor: "#1cb08e" }]}
+            placeholder={`Message ${coach.title}..`}
             value={inputText}
             onChangeText={setInputText}
             multiline
             maxLength={500}
+            onFocus={() => setIsFocused(true)} // Detect focus
+            onBlur={() => setIsFocused(false)} // Detect blur
           />
           <TouchableOpacity
             style={[
               styles.sendButton,
-              (!inputText.trim() || sending) && styles.disabledSendButton,
+              !inputText.trim() && !sending && styles.disabledSendButton,
             ]}
             onPress={sendMessage}
             disabled={!inputText.trim() || sending}
           >
             {sending ? (
-              <ActivityIndicator size="small" color="#fff" />
+              <FontAwesome5 name="stop-circle" size={24} color="white" />
             ) : (
               <Ionicons name="send" size={24} color="white" />
             )}
@@ -470,6 +472,7 @@ const styles = StyleSheet.create({
   },
   keyboardAvoid: {
     flex: 1,
+    backgroundColor: "rgb(249, 250, 251)",
   },
   loadingContainer: {
     flex: 1,
@@ -509,11 +512,19 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
   },
   messageAvatar: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
+    width: 35,
+    height: 35,
+    borderRadius: 25,
     marginRight: 8,
     alignSelf: "flex-end",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    elevation: 2,
   },
   messageContent: {
     borderRadius: 20,
@@ -521,12 +532,28 @@ const styles = StyleSheet.create({
     maxWidth: "100%",
   },
   userMessageContent: {
-    backgroundColor: "#4285F4",
+    backgroundColor: "#20c883",
     borderBottomRightRadius: 5,
+    shadowColor: "#1cb08e",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    elevation: 2,
   },
   coachMessageContent: {
-    backgroundColor: "#e0e0e0",
+    backgroundColor: "#ffffff",
     borderBottomLeftRadius: 5,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    elevation: 2,
   },
   messageText: {
     fontSize: 16,
@@ -563,21 +590,34 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 10,
+    padding: 15,
     backgroundColor: "#fff",
     borderTopWidth: 1,
     borderTopColor: "#e0e0e0",
+    height: 80,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
   },
   input: {
     flex: 1,
-    backgroundColor: "#f0f0f0",
+    backgroundColor: "#ffffff",
     borderRadius: 20,
     paddingHorizontal: 15,
     paddingVertical: 10,
-    maxHeight: 100,
+    height: "100%",
+    borderWidth: 1,
+    borderColor: "#e0e0e0",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    elevation: 2,
   },
   sendButton: {
-    backgroundColor: "#4285F4",
+    backgroundColor: "#1cb08e",
     width: 45,
     height: 45,
     borderRadius: 22.5,
