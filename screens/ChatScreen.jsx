@@ -310,14 +310,9 @@ const ChatScreen = ({ route, navigation }) => {
   );
 
   const handleProfilePress = () => {
-    // Close the drawer first
     closeConversationsDrawer();
 
-    // Navigate to profile screen or show profile modal
-    // For now, just alert with user info
-    Alert.alert("Profile", "Profile settings will be available soon!", [
-      { text: "OK" },
-    ]);
+    console.log("profile button clicked");
   };
 
   return (
@@ -328,7 +323,7 @@ const ChatScreen = ({ route, navigation }) => {
           style={styles.backButton}
           onPress={openConversationsDrawer}
         >
-          <Ionicons name="menu-outline" size={26} color="#333" />{" "}
+          <Ionicons name="menu-outline" size={26} color="#333" />
         </TouchableOpacity>
 
         <View style={styles.headerTitleContainer}>
