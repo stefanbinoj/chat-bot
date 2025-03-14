@@ -479,24 +479,55 @@ const ChatScreen = ({ route, navigation }) => {
                     ? `${conversations.length} conversations`
                     : "No conversations found"}
                 </Text>
-                <FlatList
-                  data={conversations.sort(
-                    (a, b) =>
-                      new Date(getConversationDate(b)) -
-                      new Date(getConversationDate(a))
-                  )}
-                  keyExtractor={(item, index) => item._id || index.toString()}
-                  renderItem={renderConversationItem}
-                  style={styles.flatListContainer}
-                  contentContainerStyle={styles.conversationList}
-                  ListEmptyComponent={() => (
-                    <View style={styles.emptyConversations}>
-                      <Text style={styles.emptyConversationsText}>
-                        No conversations yet
-                      </Text>
-                    </View>
-                  )}
-                />
+                <View style={{ flex: 0.9 }}>
+                  <FlatList
+                    data={conversations.sort(
+                      (a, b) =>
+                        new Date(getConversationDate(b)) -
+                        new Date(getConversationDate(a))
+                    )}
+                    keyExtractor={(item, index) => item._id || index.toString()}
+                    renderItem={renderConversationItem}
+                    style={styles.flatListContainer}
+                    contentContainerStyle={styles.conversationList}
+                    ListEmptyComponent={() => (
+                      <View style={styles.emptyConversations}>
+                        <Text style={styles.emptyConversationsText}>
+                          No conversations yet
+                        </Text>
+                      </View>
+                    )}
+                  />
+                </View>
+                <View style={styles.drawerFooter}>
+                  <TouchableOpacity
+                    style={styles.profileButton}
+                    onPress={handleProfilePress}
+                  >
+                    <Ionicons
+                      name="person-circle-outline"
+                      size={22}
+                      color="#333"
+                    />
+                    <Text style={styles.footerButtonText}>Profile</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={styles.logoutButton}
+                    onPress={handleLogout}
+                  >
+                    <Ionicons
+                      name="log-out-outline"
+                      size={22}
+                      color="#d9534f"
+                    />
+                    <Text
+                      style={[styles.footerButtonText, { color: "#d9534f" }]}
+                    >
+                      Logout
+                    </Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </Animated.View>
           </TouchableOpacity>
@@ -877,6 +908,50 @@ const styles = StyleSheet.create({
     color: "#999",
     fontSize: 12,
     alignSelf: "flex-end",
+  },
+  drawerFooter: {
+    borderTopWidth: 1,
+    borderTopColor: "#e0e0e0",
+    paddingTop: 20,
+    paddingBottom: 20,
+    marginTop: 10,
+  },
+  profileButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 10,
+    backgroundColor: "#ffffff",
+    borderRadius: 18,
+    flex: 1,
+    marginRight: 10,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: "#e0e0e0",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    elevation: 2,
+    justifyContent: "space-around",
+  },
+  logoutButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 10,
+    backgroundColor: "#fff0f0",
+    borderRadius: 8,
+    flex: 1,
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: "#ffcccb",
+  },
+  footerButtonText: {
+    marginLeft: 8,
+    fontSize: 18,
+    fontWeight: "500",
   },
 });
 
