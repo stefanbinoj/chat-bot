@@ -13,8 +13,9 @@ import {
   SafeAreaView,
   Modal,
   Dimensions,
-  ScrollView,
+  Animated,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { apiWithHeaders } from "../utils/tokenHandler";
 import { Ionicons, Feather, FontAwesome5 } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
@@ -39,6 +40,43 @@ const ChatScreen = ({ route, navigation }) => {
   // Loading states
   const [initialLoading, setInitialLoading] = useState(true);
   const [isTyping, setIsTyping] = useState(false);
+
+  //Drawer
+  const { width } = Dimensions.get("window");
+  const insets = useSafeAreaInsets();
+  const safeAreaHeight = insets.top + insets.bottom;
+
+  const [menuAnimation] = useState(new Animated.Value(-300));
+  const drawerWidth = width * 0.8; // Width of the drawer
+
+  const openConversationsDrawer = () => {
+    setIsConversationsVisible(true);
+    Animated.timing(menuAnimation, {
+      toValue: 0,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const closeConversationsDrawer = () => {
+    Animated.timing(menuAnimation, {
+      toValue: -drawerWidth,
+      duration: 300,
+      useNativeDriver: true,
+    }).start(() => setIsConversationsVisible(false));
+  };
+
+  const handleLogout = async () => {
+    try {
+      await apiWithHeaders.get("/api/session/session-logout");
+      await removeToken();
+      await refreshSession();
+    } catch (error) {
+      console.error("Logout error:", error);
+      await removeToken(); // Ensure token is removed even if API call fails
+      await refreshSession();
+    }
+  };
 
   // Fetch initial data when screen is focused
   useFocusEffect(
@@ -258,11 +296,10 @@ const ChatScreen = ({ route, navigation }) => {
     >
       <View style={styles.conversationContent}>
         <Text style={styles.conversationTitle} numberOfLines={1}>
-          {item.title || "Untitled Chat"}
-        </Text>
-        <Text style={styles.conversationPreview} numberOfLines={1}>
+          {/* {item.title || "Untitled Chat"} */}
           {getConversationPreview(item)}
         </Text>
+
         <Text style={styles.conversationDate}>
           {formatDate(getConversationDate(item))}
         </Text>
@@ -270,13 +307,24 @@ const ChatScreen = ({ route, navigation }) => {
     </TouchableOpacity>
   );
 
+  const handleProfilePress = () => {
+    // Close the drawer first
+    closeConversationsDrawer();
+
+    // Navigate to profile screen or show profile modal
+    // For now, just alert with user info
+    Alert.alert("Profile", "Profile settings will be available soon!", [
+      { text: "OK" },
+    ]);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.backButton}
-          onPress={() => setIsConversationsVisible(true)}
+          onPress={openConversationsDrawer}
         >
           <Ionicons name="menu-outline" size={26} color="#333" />{" "}
         </TouchableOpacity>
@@ -300,7 +348,6 @@ const ChatScreen = ({ route, navigation }) => {
           <Feather name="users" size={24} color="gray" />
         </TouchableOpacity>
       </View>
-
       {/* Main Chat Area */}
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -375,60 +422,89 @@ const ChatScreen = ({ route, navigation }) => {
           </View>
         )}
       </KeyboardAvoidingView>
-
       {/* Conversations Modal */}
-      <Modal
-        visible={isConversationsVisible}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={() => setIsConversationsVisible(false)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Your Conversations</Text>
-              <TouchableOpacity
-                onPress={() => setIsConversationsVisible(false)}
-              >
-                <Ionicons name="close" size={24} color="#333" />
-              </TouchableOpacity>
-            </View>
-
-            <TouchableOpacity
-              style={styles.newConversationButton}
-              onPress={handleStartNewConversation}
+      {/* Side Drawer for Conversations */}
+      {isConversationsVisible && (
+        <View style={[styles.drawerOverlay]}>
+          <TouchableOpacity
+            style={[styles.overlayTouchable]}
+            activeOpacity={1}
+            onPress={closeConversationsDrawer}
+          >
+            <Animated.View
+              style={[
+                styles.drawerContent,
+                { transform: [{ translateX: menuAnimation }] },
+              ]}
             >
-              <Ionicons name="add-circle" size={20} color="#fff" />
-              <Text style={styles.newConversationButtonText}>
-                New Conversation
-              </Text>
-            </TouchableOpacity>
-
-            <FlatList
-              data={conversations.sort(
-                (a, b) =>
-                  new Date(getConversationDate(b)) -
-                  new Date(getConversationDate(a))
-              )}
-              keyExtractor={(item, index) => item._id || index.toString()}
-              renderItem={renderConversationItem}
-              contentContainerStyle={styles.conversationList}
-              ListEmptyComponent={() => (
-                <View style={styles.emptyConversations}>
-                  <Text style={styles.emptyConversationsText}>
-                    No conversations yet
-                  </Text>
+              <View style={styles.drawerContentInner}>
+                {/* Changed from TouchableOpacity to View */}
+                <View style={styles.modalHeader}>
+                  <Text style={styles.modalTitle}> Conversations</Text>
+                  <TouchableOpacity onPress={closeConversationsDrawer}>
+                    <Ionicons name="close" size={24} color="#333" />
+                  </TouchableOpacity>
                 </View>
-              )}
-            />
-          </View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    width: "100%",
+                  }}
+                >
+                  <TouchableOpacity
+                    style={[styles.newConversationButton, { flexGrow: 1 }]}
+                    onPress={() => {
+                      handleStartNewConversation();
+                      closeConversationsDrawer();
+                    }}
+                  >
+                    <Ionicons name="add-circle" size={20} color="#fff" />
+                    <Text style={styles.newConversationButtonText}>
+                      New Conversation
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[
+                      styles.newChatButton,
+                      { marginLeft: 10, marginTop: 5 },
+                    ]}
+                    onPress={() => navigation.goBack()}
+                  >
+                    <Feather name="users" size={28} color="gray" />
+                  </TouchableOpacity>
+                </View>
+                {/* Add a debug text to see if conversations are loaded */}
+                <Text style={{ padding: 5, color: "#666" }}>
+                  {conversations.length > 0
+                    ? `${conversations.length} conversations`
+                    : "No conversations found"}
+                </Text>
+                <FlatList
+                  data={conversations.sort(
+                    (a, b) =>
+                      new Date(getConversationDate(b)) -
+                      new Date(getConversationDate(a))
+                  )}
+                  keyExtractor={(item, index) => item._id || index.toString()}
+                  renderItem={renderConversationItem}
+                  style={styles.flatListContainer}
+                  contentContainerStyle={styles.conversationList}
+                  ListEmptyComponent={() => (
+                    <View style={styles.emptyConversations}>
+                      <Text style={styles.emptyConversationsText}>
+                        No conversations yet
+                      </Text>
+                    </View>
+                  )}
+                />
+              </View>
+            </Animated.View>
+          </TouchableOpacity>
         </View>
-      </Modal>
+      )}
     </SafeAreaView>
   );
 };
-
-const { width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   container: {
@@ -632,7 +708,7 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: "rgba(255, 255, 255, 0.9)",
     position: "absolute",
-    bottom: 70,
+    bottom: 90,
     left: 20,
     borderRadius: 15,
     shadowColor: "#000",
@@ -643,6 +719,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 1.41,
     elevation: 2,
+    marginTop: 20,
   },
   typingText: {
     fontSize: 12,
@@ -673,7 +750,7 @@ const styles = StyleSheet.create({
     color: "#333",
   },
   newConversationButton: {
-    backgroundColor: "#4285F4",
+    backgroundColor: "#20c883",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
@@ -696,9 +773,9 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   selectedConversation: {
-    backgroundColor: "#e6f2ff",
+    backgroundColor: "#e7f9f2",
     borderWidth: 2,
-    borderColor: "#4285F4",
+    borderColor: "#1cb08e",
   },
   conversationContent: {},
   conversationTitle: {
@@ -738,6 +815,68 @@ const styles = StyleSheet.create({
     shadowRadius: 1.41,
     elevation: 2,
     borderRadius: 20,
+  },
+  // Add to your styles
+  // Add/update these styles
+
+  drawerOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    zIndex: 1000,
+  },
+  overlayTouchable: {
+    flex: 1,
+  },
+  drawerContent: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "80%",
+    height: "100%",
+    backgroundColor: "white",
+    zIndex: 1001,
+  },
+  drawerContentInner: {
+    flex: 1, // Important for full height
+    padding: 20,
+    marginTop: 40, // Adjust to your needs
+    height: "100%", // Ensure full height
+  },
+  flatListContainer: {
+    flex: 1, // Critical for proper FlatList rendering
+    marginTop: 10,
+    height: "100%",
+  },
+  conversationList: {
+    paddingBottom: 20,
+  },
+  conversationItem: {
+    backgroundColor: "#f9f9f9",
+    borderRadius: 10,
+    padding: 15,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: "#e0e0e0", // Add border to make items more visible
+  },
+  conversationTitle: {
+    fontWeight: "600",
+    fontSize: 16,
+    marginBottom: 4,
+    color: "#333", // Ensure text color is visible
+  },
+  conversationPreview: {
+    color: "#666",
+    fontSize: 14,
+    marginBottom: 4,
+  },
+  conversationDate: {
+    color: "#999",
+    fontSize: 12,
+    alignSelf: "flex-end",
   },
 });
 
