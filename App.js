@@ -4,6 +4,7 @@ import LoadingScreen from "./screens/LoadingScreen";
 import AuthStack from "./navigation/AuthStack";
 import MainStack from "./navigation/MainStack";
 import { AuthProvider, useAuth } from "./context/authContext";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 // Navigation container that uses the auth context
 const Navigation = () => {
@@ -15,9 +16,11 @@ const Navigation = () => {
   }
 
   return (
-    <NavigationContainer>
-      {sessionValid ? <MainStack /> : <AuthStack />}
-    </NavigationContainer>
+    <SafeAreaProvider>
+      <NavigationContainer>
+        {sessionValid ? <MainStack /> : <AuthStack />}
+      </NavigationContainer>
+    </SafeAreaProvider>
   );
 };
 

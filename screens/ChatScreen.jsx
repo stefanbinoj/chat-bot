@@ -10,7 +10,6 @@ import {
   Platform,
   ActivityIndicator,
   Image,
-  SafeAreaView,
   Modal,
   Dimensions,
   Animated,
@@ -313,7 +312,7 @@ const ChatScreen = ({ route, navigation }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity
@@ -527,7 +526,7 @@ const ChatScreen = ({ route, navigation }) => {
           </TouchableOpacity>
         </View>
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 
