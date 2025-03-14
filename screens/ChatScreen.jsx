@@ -15,7 +15,6 @@ import {
   Dimensions,
   Animated,
 } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { apiWithHeaders, removeToken } from "../utils/tokenHandler";
 import { Ionicons, Feather, FontAwesome5 } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
@@ -45,8 +44,6 @@ const ChatScreen = ({ route, navigation }) => {
 
   //Drawer
   const { width } = Dimensions.get("window");
-  const insets = useSafeAreaInsets();
-  const safeAreaHeight = insets.top + insets.bottom;
 
   const [menuAnimation] = useState(new Animated.Value(-300));
   const drawerWidth = width * 0.8; // Width of the drawer
