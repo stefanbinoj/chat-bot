@@ -57,8 +57,9 @@ const RegisterScreen = ({ navigation }) => {
         setErrorMessage(response.data.message || "Invalid company code");
       }
     } catch (err) {
+      console.error("Company code validation failed:", err.stack);
       setError(true);
-      setErrorMessage("Please provide a valid company code");
+      setErrorMessage("Please provide a valid company code...");
     } finally {
       setIsLoading(false);
     }

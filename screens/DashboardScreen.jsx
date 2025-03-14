@@ -498,10 +498,10 @@ const styles = StyleSheet.create({
     borderRadius: 45,
     marginBottom: 12,
     shadowColor: "#000", // Shadow color
-    shadowOffset: { width: 0, height: 4 }, // X, Y offset
+    shadowOffset: { width: 0, height: 2 }, // X, Y offset
     shadowOpacity: 0.3, // Opacity of shadow
     shadowRadius: 5, // Blur radius
-    elevation: 8,
+    elevation: 4,
   },
   placeholderAvatar: {
     width: 90,

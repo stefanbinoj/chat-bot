@@ -21,6 +21,7 @@ import { useFocusEffect } from "@react-navigation/native";
 
 const ChatScreen = ({ route, navigation }) => {
   const { coach } = route.params;
+  console.log("Coach:", coach);
 
   // Messages state
   const [messages, setMessages] = useState([]);
@@ -84,7 +85,7 @@ const ChatScreen = ({ route, navigation }) => {
       const response = await apiWithHeaders.post(`/api/messages/start`, {
         title: "New Chat " + new Date().toLocaleTimeString(),
         messages: [],
-        coachID: coach._id || coach.id,
+        coachID: coach._id,
       });
 
       // Add new conversation to the beginning of the list
@@ -157,19 +158,6 @@ const ChatScreen = ({ route, navigation }) => {
       console.error("Error sending message:", error);
       alert("Failed to send message. Please try again.");
     }
-  };
-
-  // Quick prompt buttons
-  const quickPrompts = [
-    { id: 1, text: "Explain like I'm 5", prompt: "Explain this like I'm 5" },
-    { id: 2, text: "Summarize", prompt: "Summarize this" },
-    { id: 3, text: "Continue", prompt: "Continue this thought" },
-    { id: 4, text: "Shorten", prompt: "Make it shorter" },
-  ];
-
-  const handleQuickPrompt = (prompt) => {
-    setInputText(prompt);
-    setTimeout(() => sendMessage(), 100);
   };
 
   const renderMessageItem = ({ item }) => {
@@ -352,17 +340,7 @@ const ChatScreen = ({ route, navigation }) => {
           horizontal
           showsHorizontalScrollIndicator={false}
           style={styles.quickPromptContainer}
-        >
-          {quickPrompts.map((item) => (
-            <TouchableOpacity
-              key={item.id}
-              style={styles.quickPromptButton}
-              onPress={() => handleQuickPrompt(item.prompt)}
-            >
-              <Text style={styles.quickPromptText}>{item.text}</Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
+        ></ScrollView>
 
         {/* Message Input */}
         <View style={styles.inputContainer}>
@@ -456,6 +434,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f5f5f5",
+    position: "relative",
   },
   header: {
     flexDirection: "row",
