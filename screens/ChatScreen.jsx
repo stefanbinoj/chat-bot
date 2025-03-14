@@ -16,13 +16,15 @@ import {
   Animated,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { apiWithHeaders } from "../utils/tokenHandler";
+import { apiWithHeaders, removeToken } from "../utils/tokenHandler";
 import { Ionicons, Feather, FontAwesome5 } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
 import OnlineIndicator from "../components/onlineIndicator";
+import { useAuth } from "../context/authContext";
 
 const ChatScreen = ({ route, navigation }) => {
   const { coach } = route.params;
+  const { refreshSession } = useAuth();
   console.log("Coach:", coach);
 
   // Messages state
@@ -479,7 +481,7 @@ const ChatScreen = ({ route, navigation }) => {
                     ? `${conversations.length} conversations`
                     : "No conversations found"}
                 </Text>
-                <View style={{ flex: 0.9 }}>
+                <View style={{ flex: 0.85 }}>
                   <FlatList
                     data={conversations.sort(
                       (a, b) =>
@@ -914,7 +916,13 @@ const styles = StyleSheet.create({
     borderTopColor: "#e0e0e0",
     paddingTop: 20,
     paddingBottom: 20,
-    marginTop: 10,
+    position: "absolute",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
+    bottom: 0,
+    left: 0,
   },
   profileButton: {
     flexDirection: "row",
@@ -923,8 +931,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
     borderRadius: 18,
     flex: 1,
+    marginLeft: 20,
     marginRight: 10,
-    marginBottom: 20,
     borderWidth: 1,
     borderColor: "#e0e0e0",
     shadowColor: "#000",
@@ -942,11 +950,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 10,
     backgroundColor: "#fff0f0",
-    borderRadius: 8,
+    borderRadius: 18,
     flex: 1,
     justifyContent: "center",
     borderWidth: 1,
     borderColor: "#ffcccb",
+    shadowColor: "#ffcccb",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    elevation: 2,
   },
   footerButtonText: {
     marginLeft: 8,
