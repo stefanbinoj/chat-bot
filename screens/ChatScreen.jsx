@@ -16,8 +16,9 @@ import {
   ScrollView,
 } from "react-native";
 import { apiWithHeaders } from "../utils/tokenHandler";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { Ionicons, Feather } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
+import OnlineIndicator from "../components/onlineIndicator";
 
 const ChatScreen = ({ route, navigation }) => {
   const { coach } = route.params;
@@ -272,31 +273,28 @@ const ChatScreen = ({ route, navigation }) => {
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.backButton}
-          onPress={() => navigation.goBack()}
+          onPress={() => setIsConversationsVisible(true)}
         >
-          <Ionicons name="arrow-back" size={24} color="#333" />
+          <Ionicons name="menu-outline" size={26} color="#333" />{" "}
         </TouchableOpacity>
 
         <View style={styles.headerTitleContainer}>
-          <Text style={styles.headerTitle}>
-            {coach.title || coach.name || "AI Coach"}
-          </Text>
-          <TouchableOpacity
-            style={styles.conversationsButton}
-            onPress={() => setIsConversationsVisible(true)}
-          >
-            <Text style={styles.conversationsButtonText}>
-              {selectedConversation?.title || "Current Chat"}
-            </Text>
-            <MaterialIcons name="arrow-drop-down" size={20} color="#4285F4" />
-          </TouchableOpacity>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Image src={coach.profileImage} style={styles.coachAvatar} />
+            <View style={{ flexDirection: "column", marginLeft: 10 }}>
+              <Text style={styles.headerTitle}>
+                {coach.title || coach.name || "AI Coach"}
+              </Text>
+              <OnlineIndicator />
+            </View>
+          </View>
         </View>
 
         <TouchableOpacity
           style={styles.newChatButton}
-          onPress={handleStartNewConversation}
+          onPress={() => navigation.goBack()}
         >
-          <Ionicons name="add" size={24} color="#4285F4" />
+          <Feather name="users" size={24} color="gray" />
         </TouchableOpacity>
       </View>
 
@@ -433,15 +431,16 @@ const { width } = Dimensions.get("window");
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#f8f9fa",
     position: "relative",
   },
   header: {
     flexDirection: "row",
+    justifyContent: "flex-start",
     alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 15,
-    paddingVertical: 12,
+    paddingHorizontal: 20,
+    paddingTop: Platform.OS === "ios" ? 10 : 50,
+    paddingBottom: 10,
     backgroundColor: "#fff",
     borderBottomWidth: 1,
     borderBottomColor: "#e0e0e0",
@@ -451,7 +450,7 @@ const styles = StyleSheet.create({
   },
   headerTitleContainer: {
     flex: 1,
-    alignItems: "center",
+    alignItems: "flex-start",
   },
   headerTitle: {
     fontSize: 18,
@@ -684,6 +683,21 @@ const styles = StyleSheet.create({
   emptyConversationsText: {
     color: "#999",
     fontSize: 16,
+  },
+  coachAvatar: {
+    width: 40,
+    height: 40,
+    marginLeft: 20,
+    padding: 5,
+    shadowColor: "#fffff",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    elevation: 2,
+    borderRadius: 20,
   },
 });
 
