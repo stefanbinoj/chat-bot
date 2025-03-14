@@ -1,10 +1,10 @@
 import React from "react";
-import { createStackNavigator } from "@react-navigation/stack";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import DashboardScreen from "../screens/DashboardScreen";
 import ChatScreen from "../screens/ChatScreen";
 import ProtectedRoute from "../utils/protectedRoute";
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
 const ProtectedScreen = ({ component: Component, ...rest }) => (
   <ProtectedRoute>
