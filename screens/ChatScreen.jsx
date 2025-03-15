@@ -541,7 +541,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     paddingHorizontal: 20,
-    paddingTop: Platform.OS === "ios" ? 10 : 50,
+    //paddingTop: Platform.OS === "ios" ? 10 : 50,
     paddingBottom: 10,
     backgroundColor: "#fff",
     borderBottomWidth: 1,
@@ -867,7 +867,7 @@ const styles = StyleSheet.create({
   drawerContentInner: {
     flex: 1, // Important for full height
     padding: 20,
-    marginTop: 40, // Adjust to your needs
+    //paddingTop: Platform.OS === "ios" ? 10 : 40,
     height: "100%", // Ensure full height
   },
   flatListContainer: {
