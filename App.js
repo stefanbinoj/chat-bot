@@ -1,10 +1,14 @@
+import { enableScreens } from "react-native-screens";
+
+// Initialize screens
+enableScreens();
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import LoadingScreen from "./screens/LoadingScreen";
 import AuthStack from "./navigation/AuthStack";
 import MainStack from "./navigation/MainStack";
 import { AuthProvider, useAuth } from "./context/authContext";
-import { SafeAreaProvider } from "react-native-safe-area-context";
 
 // Navigation container that uses the auth context
 const Navigation = () => {
