@@ -12,12 +12,19 @@
       }
     },
     "preview": {
-      "distribution": "internal"
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      }
     },
     "production": {
       "autoIncrement": true,
+      "distribution": "store",
       "android": {
-        "buildType": "apk"
+        "buildType": "aab"
+      },
+      "ios": {
+        "buildType": "archive"
       }
     },
     "development-simulator": {
@@ -30,6 +37,15 @@
     }
   },
   "submit": {
-    "production": {}
+  "production": {
+    "android": {
+      "serviceAccountKeyPath": "./google-service-account.json",
+      "track": "internal"
+    },
+    "ios": {
+      "appleId": "your-email@example.com",
+      "ascAppId": "123456789"
+    }
   }
+}
 }

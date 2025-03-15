@@ -1,29 +1,31 @@
 {
   "expo": {
-    "name": "chat-bot",
+    "name": "Naruto Bot",
     "slug": "chat-bot",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/naruto-icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "jsEngine": "hermes",
     "splash": {
-      "image": "./assets/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "image": "./assets/my-splash.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#ff5733"
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.kiasoftware.chatbot"
-
+      "bundleIdentifier": "com.kiasoftware.chatbot",
+      "buildNumber": "1.0.0"
     },
     "android": {
       "package": "com.kiasoftware.chatbot",
-
+      "versionCode": 1,
+      "permissions": [],
+      "playStoreUrl": "https://play.google.com/store/apps/details?id=com.kiasoftware.chatbot",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/sharinkan.png",
+        "backgroundColor": "blue"
       }
     },
     "web": {
@@ -33,6 +35,10 @@
       "eas": {
         "projectId": "e8aae916-0fee-4ea2-a7b5-d716b52daa5b"
       }
-    }
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": ["**/*"]
   }
 }
