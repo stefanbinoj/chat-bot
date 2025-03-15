@@ -19,11 +19,10 @@ import { Ionicons, Feather, FontAwesome5 } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
 import OnlineIndicator from "../components/onlineIndicator";
 import { useAuth } from "../context/authContext";
-
+import ProfileModal from "../components/profileModal";
 const ChatScreen = ({ route, navigation }) => {
   const { coach } = route.params;
   const { refreshSession } = useAuth();
-  console.log("Coach:", coach);
 
   // Messages state
   const [messages, setMessages] = useState([]);
@@ -36,6 +35,9 @@ const ChatScreen = ({ route, navigation }) => {
   const [conversations, setConversations] = useState([]);
   const [selectedConversation, setSelectedConversation] = useState(null);
   const [isConversationsVisible, setIsConversationsVisible] = useState(false);
+
+  //Profile Modal
+  const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
 
   // Loading states
   const [initialLoading, setInitialLoading] = useState(true);
@@ -307,8 +309,7 @@ const ChatScreen = ({ route, navigation }) => {
 
   const handleProfilePress = () => {
     closeConversationsDrawer();
-
-    console.log("profile button clicked");
+    setIsProfileModalVisible(true);
   };
 
   return (
@@ -342,6 +343,10 @@ const ChatScreen = ({ route, navigation }) => {
         </TouchableOpacity>
       </View>
       {/* Main Chat Area */}
+      <ProfileModal
+        visible={isProfileModalVisible}
+        onClose={() => setIsProfileModalVisible(false)}
+      />
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.keyboardAvoid}
@@ -375,6 +380,27 @@ const ChatScreen = ({ route, navigation }) => {
                 <Text style={styles.emptyChatText}>
                   No messages yet. Start the conversation!
                 </Text>
+                {coach.defaultQuestions && (
+                  <View style={styles.quickPromptContainer}>
+                    <FlatList
+                      data={coach.defaultQuestions}
+                      showsHorizontalScrollIndicator={false}
+                      keyExtractor={(item, index) => index.toString()}
+                      renderItem={({ item }) => (
+                        <TouchableOpacity
+                          style={styles.quickPromptButton}
+                          onPress={() => setInputText(item)}
+                        >
+                          <Text style={styles.quickPromptText}>{item}</Text>
+                        </TouchableOpacity>
+                      )}
+                      ItemSeparatorComponent={() => (
+                        <View style={{ width: 10 }} />
+                      )}
+                      contentContainerStyle={{ paddingVertical: 10 }}
+                    />
+                  </View>
+                )}
               </View>
             )}
           />
@@ -671,20 +697,20 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   quickPromptContainer: {
-    backgroundColor: "#fff",
-    paddingVertical: 10,
+    position: "absolute",
+    bottom: 10,
     paddingHorizontal: 15,
   },
   quickPromptButton: {
-    backgroundColor: "#4285F4",
+    backgroundColor: "#20c883",
     paddingHorizontal: 12,
-    paddingVertical: 6,
+    paddingVertical: 12,
     borderRadius: 16,
-    marginRight: 10,
+    marginBottom: 10,
   },
   quickPromptText: {
     color: "#fff",
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: "500",
   },
   inputContainer: {
