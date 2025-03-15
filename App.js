@@ -9,11 +9,11 @@ import LoadingScreen from "./screens/LoadingScreen";
 import AuthStack from "./navigation/AuthStack";
 import MainStack from "./navigation/MainStack";
 import { AuthProvider, useAuth } from "./context/authContext";
+import { StatusBar } from "react-native"; // Add this import
 
 // Navigation container that uses the auth context
 const Navigation = () => {
   const { sessionValid, isLoading } = useAuth();
-  console.log("sessionValid", sessionValid);
 
   if (isLoading) {
     return <LoadingScreen />;
@@ -21,6 +21,11 @@ const Navigation = () => {
 
   return (
     <SafeAreaProvider>
+      <StatusBar
+        backgroundColor="#ffffff"
+        barStyle="dark-content"
+        translucent={false}
+      />
       <NavigationContainer>
         {sessionValid ? <MainStack /> : <AuthStack />}
       </NavigationContainer>

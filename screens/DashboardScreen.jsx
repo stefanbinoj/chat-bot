@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import Entypo from "@expo/vector-icons/Entypo";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
+
 import { LinearGradient } from "expo-linear-gradient"; // ✅ Use Expo's LinearGradient
 
 import {
@@ -201,7 +201,6 @@ const DashboardScreen = ({ navigation }) => {
     setIsCoachesLoading(true);
     try {
       const response = await apiWithHeaders.get("/api/coach");
-      console.log("Coaches response:", response.data);
 
       if (Array.isArray(response.data)) {
         setCoaches(response.data);
@@ -277,7 +276,6 @@ const DashboardScreen = ({ navigation }) => {
 
   const handleLogout = async () => {
     try {
-      console.log("Logging out...");
       await apiWithHeaders.get("/api/session/session-logout");
       await removeToken();
       await refreshSession();
@@ -364,19 +362,20 @@ const DashboardScreen = ({ navigation }) => {
         <Text style={styles.title}>Select a Coach</Text>
         {!selectedCoach ? (
           <TouchableOpacity onPress={handleLogout}>
-            <MaterialCommunityIcons
+            <MaterialIcons
               name="logout"
-              size={24}
+              size={26}
               color="red"
               style={styles.logoutIcon}
             />
           </TouchableOpacity>
         ) : (
-          <Entypo
-            name="forward"
-            size={24}
+          <FontAwesome
+            name="chevron-right"
+            size={26}
             color="#20c883"
             onPress={handleRedirectToChat}
+            style={styles.logoutIcon}
           />
         )}
       </View>
@@ -442,6 +441,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 20,
     //paddingTop: Platform.OS === "ios" ? 10 : 40,
+    paddingTop: 10,
     paddingBottom: 10,
     backgroundColor: "#fff",
   },

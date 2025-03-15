@@ -10,7 +10,6 @@ import {
   Platform,
   ActivityIndicator,
   Image,
-  Modal,
   Dimensions,
   Animated,
 } from "react-native";
@@ -350,7 +349,7 @@ const ChatScreen = ({ route, navigation }) => {
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.keyboardAvoid}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 110 : 30}
       >
         {initialLoading ? (
           <View style={styles.loadingContainer}>
@@ -567,7 +566,8 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     paddingHorizontal: 20,
-    //paddingTop: Platform.OS === "ios" ? 10 : 50,
+    //paddingTop: Platform.OS === "ios" ? 10 : 40,
+    paddingTop: 10,
     paddingBottom: 10,
     backgroundColor: "#fff",
     borderBottomWidth: 1,
@@ -720,7 +720,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderTopWidth: 1,
     borderTopColor: "#e0e0e0",
-    height: 80,
+    minHeight: 60,
+    maxHeight: 120,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
   },
@@ -729,8 +730,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
     borderRadius: 20,
     paddingHorizontal: 15,
-    paddingVertical: 10,
-    height: "100%",
+    paddingTop: 12, // More consistent padding
+    paddingBottom: 12,
+    minHeight: 45, // Minimum height instead of fixed height
+    maxHeight: 100,
     borderWidth: 1,
     borderColor: "#e0e0e0",
     shadowColor: "#000",
@@ -894,6 +897,7 @@ const styles = StyleSheet.create({
     flex: 1, // Important for full height
     padding: 20,
     //paddingTop: Platform.OS === "ios" ? 10 : 40,
+    paddingTop: 10,
     height: "100%", // Ensure full height
   },
   flatListContainer: {

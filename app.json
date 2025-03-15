@@ -8,10 +8,15 @@
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "jsEngine": "hermes",
+    "androidStatusBar": {
+      "backgroundColor": "#ffffff",
+      "barStyle": "dark-content" ,
+      "translucent": false
+    },
     "splash": {
       "image": "./assets/my-splash.png",
       "resizeMode": "cover",
-      "backgroundColor": "#ff5733"
+      "backgroundColor": "#ffffff"  
     },
     "ios": {
       "supportsTablet": true,
