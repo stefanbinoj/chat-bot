@@ -9,7 +9,6 @@ import {
   Text,
   TouchableOpacity,
   Alert,
-  SafeAreaView,
   FlatList,
   Image,
   ActivityIndicator,
@@ -359,7 +358,7 @@ const DashboardScreen = ({ navigation }) => {
 
   // Main Dashboard Screen with Coach Selection
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       {showFirstLoginModal && renderFirstLoginModal()}
       <View style={styles.header}>
         <Text style={styles.title}>Select a Coach</Text>
@@ -425,7 +424,7 @@ const DashboardScreen = ({ navigation }) => {
           )}
         />
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -442,7 +441,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 20,
-    paddingTop: Platform.OS === "ios" ? 10 : 40,
+    //paddingTop: Platform.OS === "ios" ? 10 : 40,
     paddingBottom: 10,
     backgroundColor: "#fff",
   },

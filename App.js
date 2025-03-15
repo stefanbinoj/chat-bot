@@ -1,4 +1,8 @@
-import "react-native-gesture-handler";
+import { enableScreens } from "react-native-screens";
+
+// Initialize screens
+enableScreens();
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import LoadingScreen from "./screens/LoadingScreen";
@@ -16,9 +20,11 @@ const Navigation = () => {
   }
 
   return (
-    <NavigationContainer>
-      {sessionValid ? <MainStack /> : <AuthStack />}
-    </NavigationContainer>
+    <SafeAreaProvider>
+      <NavigationContainer>
+        {sessionValid ? <MainStack /> : <AuthStack />}
+      </NavigationContainer>
+    </SafeAreaProvider>
   );
 };
 

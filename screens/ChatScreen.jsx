@@ -10,7 +10,6 @@ import {
   Platform,
   ActivityIndicator,
   Image,
-  SafeAreaView,
   Modal,
   Dimensions,
   Animated,
@@ -313,7 +312,7 @@ const ChatScreen = ({ route, navigation }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity
@@ -527,7 +526,7 @@ const ChatScreen = ({ route, navigation }) => {
           </TouchableOpacity>
         </View>
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -542,7 +541,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     paddingHorizontal: 20,
-    paddingTop: Platform.OS === "ios" ? 10 : 50,
+    //paddingTop: Platform.OS === "ios" ? 10 : 50,
     paddingBottom: 10,
     backgroundColor: "#fff",
     borderBottomWidth: 1,
@@ -868,7 +867,7 @@ const styles = StyleSheet.create({
   drawerContentInner: {
     flex: 1, // Important for full height
     padding: 20,
-    marginTop: 40, // Adjust to your needs
+    //paddingTop: Platform.OS === "ios" ? 10 : 40,
     height: "100%", // Ensure full height
   },
   flatListContainer: {

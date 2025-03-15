@@ -1,3 +1,9 @@
-export const API_URL = "http://192.168.1.12:4002";
+export const API_URL = "http://10.0.2.2:4002";
 
 // http://localhost:4002
+//http://10.0.2.2:4002
+
+//todo :
+//profile edition
+//splash screen
+//default questions
