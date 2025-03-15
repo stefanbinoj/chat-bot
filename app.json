@@ -24,8 +24,8 @@
       "permissions": [],
       "playStoreUrl": "https://play.google.com/store/apps/details?id=com.kiasoftware.chatbot",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/sharinkan.png",
-        "backgroundColor": "blue"
+        "foregroundImage": "./assets/naruto-icon.png",
+        "backgroundColor": "#ff5733"
       }
     },
     "web": {

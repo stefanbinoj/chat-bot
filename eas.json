@@ -21,10 +21,10 @@
       "autoIncrement": true,
       "distribution": "store",
       "android": {
-        "buildType": "aab"
+        "buildType": "app-bundle"
       },
       "ios": {
-        "buildType": "archive"
+        "autoIncrement": true
       }
     },
     "development-simulator": {
