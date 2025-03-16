@@ -349,7 +349,9 @@ const ChatScreen = ({ route, navigation }) => {
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.keyboardAvoid}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 110 : 30}
+        //maybe fix need
+        // keyboardVerticalOffset={Platform.OS === "ios" ? 110 : 30}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 5 : 30}
       >
         {initialLoading ? (
           <View style={styles.loadingContainer}>
@@ -566,8 +568,8 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     paddingHorizontal: 20,
-    //paddingTop: Platform.OS === "ios" ? 10 : 40,
-    paddingTop: 10,
+    paddingTop: Platform.OS === "ios" ? 70 : 10,
+    //paddingTop: 10,
     paddingBottom: 10,
     backgroundColor: "#fff",
     borderBottomWidth: 1,
@@ -724,6 +726,7 @@ const styles = StyleSheet.create({
     maxHeight: 120,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
+    marginBottom: Platform.OS === "ios" ? 5 : 0,
   },
   input: {
     flex: 1,
@@ -896,8 +899,8 @@ const styles = StyleSheet.create({
   drawerContentInner: {
     flex: 1, // Important for full height
     padding: 20,
-    //paddingTop: Platform.OS === "ios" ? 10 : 40,
-    paddingTop: 10,
+    paddingTop: Platform.OS === "ios" ? 70 : 10,
+    //paddingTop: 10,
     height: "100%", // Ensure full height
   },
   flatListContainer: {
