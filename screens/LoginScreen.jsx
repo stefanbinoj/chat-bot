@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   View,
@@ -14,8 +14,19 @@ import { API_URL } from "../constant";
 import { storeToken } from "../utils/tokenHandler";
 import { useAuth } from "../context/authContext";
 import { LinearGradient } from "expo-linear-gradient";
+import { shouldShowSplash } from "./SplashScreen";
 
 const LoginScreen = ({ navigation }) => {
+  useEffect(() => {
+    const checkSplash = async () => {
+      const showSplash = await shouldShowSplash();
+      if (showSplash === true) {
+        navigation.navigate("Splash");
+      }
+    };
+
+    checkSplash();
+  }, []);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
